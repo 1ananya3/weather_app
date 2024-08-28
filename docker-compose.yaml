@@ -1,0 +1,60 @@
+version: '3'
+services:
+  client:
+    build: ./client
+    container_name: weather-ui
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./client:/app
+    networks:
+      - weather-network
+  
+  # web:
+  #   build: ./backend
+  #   container_name: fastapi
+  #   command: sh -c "uvicorn main:app --reload --port=8000 --host=0.0.0.0"
+  #   ports:
+  #     - 8000:8000
+  #   volumes:
+  #     - ./backend:/app
+
+  # kafka:
+  #   image: confluentinc/cp-kafka
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     KAFKA_ZOOKEEPER_CONNECT: 10.75.115.54:2181
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.75.115.54:9092
+  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # zookeeper:
+  #   image: zookeeper
+  #   ports:
+  #     - "2181:2181"
+
+  server:
+    build: ./server
+    container_name: weather-node
+    ports:
+      - "3001:3001"
+    # depends_on:
+    #   - database
+    volumes:
+      - ./server:/app
+    networks:
+      - weather-network
+  
+  # database:
+  #   image: mongo
+  #   container_name: mongo-db
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - drone-network
+
+networks:
+  weather-network:
+    driver: bridge
